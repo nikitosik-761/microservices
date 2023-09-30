@@ -40,6 +40,8 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - spring
   eureka-server:
     image: nikitosbarbos/eureka-server:latest
     container_name: eureka-server
@@ -51,7 +53,6 @@ services:
       - spring
     depends_on:
       - zipkin
-      -
   apigw:
     image: nikitosbarbos/apigw:latest
     container_name: apigw
@@ -64,6 +65,53 @@ services:
     depends_on:
       - zipkin
       - eureka-server
+  customer:
+    image: nikitosbarbos/customer:latest
+    container_name: customer
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - zipkin
+      - eureka-server
+      - postgres
+      - rabbitmq
+
+  fraud:
+    image: nikitosbarbos/fraud:latest
+    container_name: fraud
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - zipkin
+      - eureka-server
+      - postgres
+      - rabbitmq
+
+  notification:
+    image: nikitosbarbos/notification:latest
+    container_name: notification
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - zipkin
+      - eureka-server
+      - postgres
+      - rabbitmq
 
 
 networks:
