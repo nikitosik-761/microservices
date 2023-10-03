@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(
-    value = "fraud"
+    //value = "fraud"
+        name = "fraud",
+        url = "${clients.fraud.url}"
 )
 public interface FraudClient {
 
